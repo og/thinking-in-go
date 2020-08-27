@@ -8,9 +8,10 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-	merchantReply := merchantService.Service{}.CreateMerchant(merchantService.ReqCreateMerchant{
+	merchantReply, reject := merchantService.Service{}.CreateMerchant(merchantService.ReqCreateMerchant{
 		Name: "测试1",
 	})
+	if reject != nil {panic(reject)}
 	shopReply, reject := shopService.Service{}.CreateShop(shopService.ReqCreateShop{
 		MerchantID: merchantReply.MerchantID,
 		Name:       "一号店",
