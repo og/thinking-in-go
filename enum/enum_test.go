@@ -9,7 +9,13 @@ import (
 	"testing"
 )
 
+var _= `
+# 枚举
+
+`
+
 var _ = `
+## Go语言特性
 使用枚举的场景一般是函数参数或用来表示（状态 种类 模式） 等信息。
 直接使用字符串或数字会让代码不易于维护
 `
@@ -129,6 +135,8 @@ func TestJSON(t *testing.T) {
 }
 
 var _ = `
+## 集中管理 
+
 enum 类型还可以做一个关联性更强的设计
 `
 
@@ -137,8 +145,8 @@ func (MessageType) Enum() (enum struct {
 	Normal MessageType
 	Hot MessageType
 }) {
-	enum.Normal = MessageType("normal")
-	enum.Hot = MessageType("hot")
+	enum.Normal = "normal"
+	enum.Hot = "hot"
 	return
 }
 func (t MessageType) String() string { return string(t) }
@@ -214,5 +222,4 @@ func MessageTypeSwitch(t MessageType, Normal func(_normal int), Hot func(_hot bo
 }
 
 为了将 enum 的相关实现都"聚合"起来，请务必实现 ^value.Enum() (enum struct{...})^ ^value.Switch(func ...)^
-
 `
