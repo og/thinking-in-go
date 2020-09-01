@@ -1,11 +1,17 @@
 package goodsService
 
 import (
-	goodsStore "github.com/og/thinking-in-go/ddd/goods/store"
-	shopService "github.com/og/thinking-in-go/ddd/shop"
+	goodsInterface "github.com/og/thinking-in-go/ddd/goods/interface"
+	shopInterface "github.com/og/thinking-in-go/ddd/shop/interface"
 )
 
 type Service struct {
-	store goodsStore.Store
-	shop shopService.Service
+	repo goodsInterface.Repo
+	shop shopInterface.Service
+}
+func NewService(repo goodsInterface.Repo, shop shopInterface.Service) Service {
+	return Service{
+		repo: repo,
+		shop: shop,
+	}
 }

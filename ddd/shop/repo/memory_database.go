@@ -1,4 +1,4 @@
-package shopStore
+package shopRepo
 
 import (
 	 "github.com/og/thinking-in-go/ddd/shop/model"

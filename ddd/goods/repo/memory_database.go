@@ -1,4 +1,4 @@
-package goodsStore
+package goodsRepo
 
 import (
 	goodsModel "github.com/og/thinking-in-go/ddd/goods/model"

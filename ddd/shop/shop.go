@@ -3,28 +3,23 @@ package shopService
 import (
 	"errors"
 	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
-	storeModel "github.com/og/thinking-in-go/ddd/shop/model"
-	shopStore "github.com/og/thinking-in-go/ddd/shop/store"
+	shopDTS "github.com/og/thinking-in-go/ddd/shop/dts"
+	repoModel "github.com/og/thinking-in-go/ddd/shop/model"
+	shopRepo "github.com/og/thinking-in-go/ddd/shop/repo"
 )
 
 
-type ReqCreateShop struct {
-	MerchantID merchantModel.IDMerchant
-	Name string
-}
-type ReplyCreateShop struct {
-	ShopID storeModel.IDShop `json:"shopID"`
-}
-func (dep Service) CreateShop(req ReqCreateShop) (reply ReplyCreateShop, reject error) {
+
+func (dep Service) CreateShop(req shopDTS.ReqCreateShop) (reply shopDTS.ReplyCreateShop, reject error) {
 	/* 所属权验证 */{/*暂无*/}
 	/* 重复验证 */{
-		_, hasStore := dep.store.ShopByNameInMerchant(req.Name, req.MerchantID)
-		if hasStore {
+		_, hasRepo := dep.repo.ShopByNameInMerchant(req.Name, req.MerchantID)
+		if hasRepo {
 			return reply, errors.New("店铺(" + req.Name + ")已存在")
 		}
 	}
 	/* 数据存储 */{
-		shop := dep.store.CreateShop(shopStore.CreateShopData{
+		shop := dep.repo.CreateShop(shopRepo.CreateShopData{
 			MerchantID: req.MerchantID,
 			Name:       req.Name,
 		})
@@ -34,8 +29,8 @@ func (dep Service) CreateShop(req ReqCreateShop) (reply ReplyCreateShop, reject 
 }
 
 
-func (dep Service) OwnershipShop(shopID storeModel.IDShop, merchantID merchantModel.IDMerchant) (reject error) {
-	shop, hasShop := dep.store.ShopByStoreID(shopID)
+func (dep Service) OwnershipShop(shopID repoModel.IDShop, merchantID merchantModel.IDMerchant) (reject error) {
+	shop, hasShop := dep.repo.ShopByRepoID(shopID)
 	if !hasShop {
 		return errors.New("商店不存在")
 	}

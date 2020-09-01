@@ -1,22 +1,21 @@
-package goodsStore
+package goodsRepo
 
 import (
 	goodsModel "github.com/og/thinking-in-go/ddd/goods/model"
-	storeModel "github.com/og/thinking-in-go/ddd/shop/model"
+	repoModel "github.com/og/thinking-in-go/ddd/shop/model"
 	"strings"
 )
 
-type Store struct {}
 
 type CreateGoodsData struct {
-	ShopID storeModel.IDShop
+	ShopID repoModel.IDShop
 	Title string
 	Price float64
 	Banner []string
 	DetailPhoto []string
 	Sale bool
 }
-func (Store) CreateGoods(data CreateGoodsData) (goods goodsModel.Goods) {
+func (Repo) CreateGoods(data CreateGoodsData) (goods goodsModel.Goods) {
 	goods = goodsModel.Goods{
 		ShopID: data.ShopID,
 		Title: data.Title,
@@ -30,7 +29,7 @@ func (Store) CreateGoods(data CreateGoodsData) (goods goodsModel.Goods) {
 	return goods
 }
 // 命名规则{数据}By{值}In{范围}
-func (Store) GoodsByTitleInStore(searchGoodsTitle string, shopID storeModel.IDShop) (goodsModel.Goods, bool) {
+func (Repo) GoodsByTitleInRepo(searchGoodsTitle string, shopID repoModel.IDShop) (goodsModel.Goods, bool) {
 	for _, goods := range database.Goods {
 		if strings.Contains(goods.Title, searchGoodsTitle) {
 			return goods, true

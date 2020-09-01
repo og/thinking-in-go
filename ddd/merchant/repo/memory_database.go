@@ -1,4 +1,4 @@
-package merchantStore
+package merchantRepo
 
 import (
 	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
