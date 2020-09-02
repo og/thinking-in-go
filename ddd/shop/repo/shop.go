@@ -1,13 +1,13 @@
 package shopRepo
 
 import (
-	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
+	merchantModel "github.com/og/thinking-in-go/ddd/merchant/repo/model"
 	shopModel "github.com/og/thinking-in-go/ddd/shop/model"
 	"strings"
 )
 type CreateShopData struct {
 	MerchantID merchantModel.IDMerchant
-	Name string
+	Name       string
 }
 func (Repo) CreateShop(data CreateShopData) shopModel.Shop {
 	shop := shopModel.Shop{

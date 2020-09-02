@@ -71,9 +71,12 @@ github.com/mediocregopher/radix/v3 v3.4.2/go.mod h1:8FL3F6UQRXHXIBSPUs5h0RybMF8i
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/og/gofree v0.0.0-20200807161504-ecb1eadd64ea h1:H/dxCSIz9vIpU+581Fj6UChKn1cJFWyYvzvB01Beq0o=
 github.com/og/gofree v0.0.0-20200807161504-ecb1eadd64ea/go.mod h1:mpOUfEAl3p6zeMQKVsdwcxfPQgPeFvyYeOIRobj1f7k=
+github.com/og/thinking-in-go v0.0.0-20200901083223-ebbc83daa272 h1:05vn+Jjuz+lebl2732CgLEXuWnlEObEIwa93IqO9IVw=
 github.com/og/x v0.0.0-20200102034047-45ae3cda9792/go.mod h1:9CPknqm4VhKaQKRcllH3pCVAz4Wj0yfuRBKEXw37rxw=
 github.com/og/x v0.0.0-20200508064944-2ad6048904ab h1:ZZC75KWQNpL05hjRobeFeRic/mjg6ecvFPGMkXxKkgQ=
 github.com/og/x v0.0.0-20200508064944-2ad6048904ab/go.mod h1:FCkdxiGT08CmLFFLnZhFhsgPBBkv4lQ1lU7XyzTunQg=
+github.com/og/x v0.0.0-20200902084643-8d48a73dc53d h1:FAtGAK3LrYXMnzLfsOMWvhJIsv94ntZOTGjBh6bSuPI=
+github.com/og/x v0.0.0-20200902084643-8d48a73dc53d/go.mod h1:FCkdxiGT08CmLFFLnZhFhsgPBBkv4lQ1lU7XyzTunQg=
 github.com/og/x/json v0.0.0-20190911074324-46c1b3e856fb/go.mod h1:bZrrjE/DSoVtxVFWtDHU1BD82zwiheYZSSjCFWHEm70=
 github.com/og/x/json v0.0.0-20200328105910-6c65c720db7e/go.mod h1:gcYUIgxOtIITHViuIilfUch7h7Stzt2+4J1neXDhDto=
 github.com/og/x/json v0.0.0-20200407164412-fe1d056701e0 h1:E+XjXI7dWLhCJxJtNd5pqQBSBvO4/DdkL+5FsCal9M4=

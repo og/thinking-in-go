@@ -1,13 +1,11 @@
 package merchantRepo
 
 import (
-	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
+	merchantRepoDTS "github.com/og/thinking-in-go/ddd/merchant/repo/dts"
+	merchantModel "github.com/og/thinking-in-go/ddd/merchant/repo/model"
 	"strings"
 )
 
-type CreateMerchantData struct {
-	Name string
-}
 func (Repo) MerchantByName(name string) (model merchantModel.Merchant, has bool) {
 	for _, merchant := range database.Merchant {
 		if strings.Contains(merchant.Name, name) {
@@ -16,7 +14,7 @@ func (Repo) MerchantByName(name string) (model merchantModel.Merchant, has bool)
 	}
 	return merchantModel.Merchant{}, false
 }
-func (Repo) CreateMerchant(data CreateMerchantData) (merchant merchantModel.Merchant) {
+func (Repo) CreateMerchant(data merchantRepoDTS.CreateMerchantData) (merchant merchantModel.Merchant) {
 	merchant = merchantModel.Merchant{
 		Name: data.Name,
 	}

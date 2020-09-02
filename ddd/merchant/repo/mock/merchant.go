@@ -1,8 +1,8 @@
 package merchantRepoMock
 
 import (
-	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
 	merchantRepo "github.com/og/thinking-in-go/ddd/merchant/repo"
+	merchantModel "github.com/og/thinking-in-go/ddd/merchant/repo/model"
 )
 
 

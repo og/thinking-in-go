@@ -1,8 +1,9 @@
 package merchantRepo_test
 
 import (
-	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
 	merchantRepo "github.com/og/thinking-in-go/ddd/merchant/repo"
+	merchantRepoDTS "github.com/og/thinking-in-go/ddd/merchant/repo/dts"
+	merchantModel "github.com/og/thinking-in-go/ddd/merchant/repo/model"
 	gtest "github.com/og/x/test"
 	"testing"
 )
@@ -11,7 +12,7 @@ func TestRepo_CreateMerchant(t *testing.T) {
 	as := gtest.NewAS(t)
 	repo := merchantRepo.NewRepo()
 	merchantName := "可口可乐"
-	repo.CreateMerchant(merchantRepo.CreateMerchantData{
+	repo.CreateMerchant(merchantRepoDTS.CreateMerchantData{
 		Name: merchantName,
 	})
 	{

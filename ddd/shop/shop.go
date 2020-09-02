@@ -2,7 +2,7 @@ package shopService
 
 import (
 	"errors"
-	merchantModel "github.com/og/thinking-in-go/ddd/merchant/model"
+	merchantModel "github.com/og/thinking-in-go/ddd/merchant/repo/model"
 	shopDTS "github.com/og/thinking-in-go/ddd/shop/dts"
 	repoModel "github.com/og/thinking-in-go/ddd/shop/model"
 	shopRepo "github.com/og/thinking-in-go/ddd/shop/repo"
