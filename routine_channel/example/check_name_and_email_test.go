@@ -46,6 +46,7 @@ func CheckNameAndEmail(user User) (has bool) {
 	hasCh := make(chan bool, 2)
 	go CheckName(user.Name, hasCh)
 	go CheckEmail(user.Email, hasCh)
+	// 根据容量（2）获取2次 hasCh 的值
 	for i:=0;i<cap(hasCh);i++{
 		if <-hasCh {
 			return true
