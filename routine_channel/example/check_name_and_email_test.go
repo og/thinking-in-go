@@ -15,41 +15,33 @@ type User struct {
 	Name string
 	Email string
 }
-var userList = []User{
-	{Name: "abc", Email: "abc@x.com"},
-	{Name: "123", Email: "123@x.com"},
-	{Name: "xyz", Email: "xyz@x.com"},
-}
-func CheckName(name string, has chan<- bool) {
-	log.Print(`CheckName("` + name + `")`)
-	for _, user := range userList {
+var nameList = []string{"abc", "123", "xyz"}
+var emailList = []string{"abc@x.com", "123@x.com", "xyz@x.com"}
+
+func CheckName(queryName string, has chan<- bool) {
+	log.Print(`CheckName("` + queryName + `")`)
+	for _, name := range nameList {
 		time.Sleep(time.Millisecond*500) // 模拟查询每次遍历需要0.5s延迟
-		log.Print([]string{"CheckName:", user.Name, name})
-		if user.Name == name {
+		log.Print([]string{"CheckName:", name, queryName})
+		if name == queryName {
 			has <- true
 			return
 		}
 	}
 	has <- false
 }
-func CheckEmail(email string, has chan<-bool) {
-	log.Print(`CheckEmail("` + email + `")`)
-	for _, user := range userList {
+func CheckEmail(queryEmail string, has chan<-bool) {
+	log.Print(`CheckEmail("` + queryEmail + `")`)
+	for _, email := range emailList {
 		time.Sleep(time.Millisecond*500) // 模拟查询数据IO的时间差异
-		log.Print([]string{"CheckEmail:", user.Email, email})
-		if user.Email == email {
+		log.Print([]string{"CheckEmail:", email, queryEmail})
+		if email == queryEmail {
 			has <- true
 			return
 		}
 	}
 	has <- false
 }
-/*
-	因为email和name都是并发查询的特性，所以最少要查询2次有结果。（0.5s + 0.5s）
-	如果是队列查询，则最少查询1次才会有结果。(0.5s)
-	需要在查询效率和查询速度中取舍，决定使用队列查询还是并发查询。
-	（实际工作中）
-*/
 func CheckNameAndEmail(user User) (has bool) {
 	hasCh := make(chan bool, 2)
 	go CheckName(user.Name, hasCh)
