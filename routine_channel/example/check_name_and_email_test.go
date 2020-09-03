@@ -21,7 +21,7 @@ var emailList = []string{"abc@x.com", "123@x.com", "xyz@x.com"}
 func CheckName(queryName string, has chan<- bool) {
 	log.Print(`CheckName("` + queryName + `")`)
 	for _, name := range nameList {
-		time.Sleep(time.Millisecond*500) // 模拟查询每次遍历需要0.5s延迟
+		time.Sleep(time.Millisecond*500) // 模拟查询数据IO的时间差异
 		log.Print([]string{"CheckName:", name, queryName})
 		if name == queryName {
 			has <- true
@@ -53,7 +53,6 @@ func CheckNameAndEmail(user User) (has bool) {
 	}
 	return false
 }
-// 耗时 0.5s
 func TestCheckNameAndEmail_1(t *testing.T) {
 	as := gtest.NewAS(t)
 	as.Equal(
@@ -64,7 +63,6 @@ func TestCheckNameAndEmail_1(t *testing.T) {
 		true,
 	)
 }
-// 耗时 1s
 func TestCheckNameAndEmail_2(t *testing.T) {
 	as := gtest.NewAS(t)
 	as.Equal(
@@ -76,7 +74,6 @@ func TestCheckNameAndEmail_2(t *testing.T) {
 	)
 }
 
-// 耗时 1.5s
 func TestCheckNameAndEmail_3(t *testing.T) {
 	as := gtest.NewAS(t)
 	as.Equal(
@@ -87,7 +84,6 @@ func TestCheckNameAndEmail_3(t *testing.T) {
 		true,
 	)
 }
-// 耗时 1.5s
 func TestCheckNameAndEmail_4(t *testing.T) {
 	as := gtest.NewAS(t)
 	as.Equal(
