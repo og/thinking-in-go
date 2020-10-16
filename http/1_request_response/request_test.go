@@ -3,6 +3,7 @@ package tig_http_router
 import (
 	"fmt"
 	ogjson "github.com/og/json"
+	"github.com/og/juice"
 	gconv "github.com/og/x/conv"
 	"log"
 	"net/http"
@@ -152,27 +153,33 @@ req := Req{
 基于 github.com/og/juice 可快速绑定请求
 
 `
-type JE interface {RequestParse(r *http.Request, v interface{})}
-var je JE
 
-func TestJuiceRequestParse(t *testing.T) {
-	type Req struct {
+func TestJuiceBindrequest(t *testing.T) {
+	serve := juice.NewServe(juice.ServeOption{})
+	type ReqHome struct {
 		Name string `query:"name"`
-		Age int `query:"age"`
+
 	}
-	req := Req{}
-	// name=nimoc&age=27
-	r := &http.Request{}
-	je.RequestParse(r, &req)
+	serve.HandleFunc(juice.GET, "/", func(c *juice.Context) (reject error) {
+		type Req struct {
+			Name string `query:"name"`
+			Age int `query:"age"`
+		}
+		req := Req{}
+		reject = c.BindRequest(&req) ; if reject != nil {return}
+		return c.Bytes([]byte(fmt.Sprintf("我是%s，今年%d岁", req.Name, req.Age)))
+	})
+	err := serve.Listen(":1004"); if err != nil {panic(err)}
 }
+
 
 func TestResponse(t *testing.T) {
 	serve := http.NewServeMux()
-	log.Print("打开 http://127.0.0.1:1004/response")
+	log.Print("打开 http://127.0.0.1:1005/response")
 	serve.HandleFunc("/response", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("abc")) ; if err != nil {panic(err)}
 	})
-	log.Print("打开 http://127.0.0.1:1004/json")
+	log.Print("打开 http://127.0.0.1:1005/json")
 	serve.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		w.Header().Set("Content-type", "application/json")
@@ -187,20 +194,20 @@ func TestResponse(t *testing.T) {
 		jsonb, err := ogjson.BytesWithErr(reply) ; if err != nil {panic(err)}
 		_, err = w.Write(jsonb) ; if err != nil {panic(err)}
 	})
-	log.Print("打开 http://127.0.0.1:1004/html")
+	log.Print("打开 http://127.0.0.1:1005/html")
 	serve.HandleFunc("/html", func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		w.Header().Set("Content-type", "text/html")
 		_, err = w.Write([]byte(`<a href="https://github.com/og/thinking-in-go">thinking-in-go</a>`))
 		if err != nil {panic(err)}
 	})
-	log.Print("打开 http://127.0.0.1:1004/download 下载文件")
+	log.Print("打开 http://127.0.0.1:1005/download 下载文件")
 	serve.HandleFunc("/download", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-type", "application/octet-stream")
 		w.Header().Set("Content-Disposition", `attachment; filename="a.txt"`)
 		_, err := w.Write([]byte("abc")) ; if err != nil { panic(err) }
 	})
-	log.Print("打开 http://127.0.0.1:1004/set_cookie?title=orange")
+	log.Print("打开 http://127.0.0.1:1005/set_cookie?title=orange")
 	serve.HandleFunc("/set_cookie", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name: "title",
@@ -208,7 +215,7 @@ func TestResponse(t *testing.T) {
 		})
 		_, err := w.Write([]byte("set cookie success")) ; if err != nil { panic(err) }
 	})
-	log.Print("打开 http://127.0.0.1:1004/get_cookie")
+	log.Print("打开 http://127.0.0.1:1005/get_cookie")
 	serve.HandleFunc("/get_cookie", func(w http.ResponseWriter, r *http.Request) {
 			var err error
 			var title string
@@ -223,7 +230,7 @@ func TestResponse(t *testing.T) {
 			}
 		_, err = w.Write([]byte("get cookie:(" + title + ")")) ; if err != nil { panic(err) }
 	})
-	addr := ":1004"
+	addr := ":1005"
 	log.Print("Listen http://127.0.0.1"+ addr)
 	err := http.ListenAndServe(addr, serve)
 	if err != nil {panic(err)}
