@@ -2,6 +2,8 @@ package tig_http_router
 
 import (
 	"fmt"
+	ogjson "github.com/og/json"
+	"github.com/og/juice"
 	gconv "github.com/og/x/conv"
 	"log"
 	"net/http"
@@ -150,18 +152,103 @@ req := Req{
 
 基于 github.com/og/juice 可快速绑定请求
 
-
 `
-type JE interface {RequestParse(r *http.Request, v interface{})}
-var je JE
 
-func TestOrangeParse(t *testing.T) {
-	type Req struct {
+func TestJuiceBindrequest(t *testing.T) {
+	serve := juice.NewServe(juice.ServeOption{})
+	type ReqHome struct {
 		Name string `query:"name"`
-		Age int `query:"age"`
+
 	}
-	req := Req{}
-	// name=nimoc&age=27
-	r := &http.Request{}
-	je.RequestParse(r, &req)
+	serve.HandleFunc(juice.GET, "/", func(c *juice.Context) (reject error) {
+		type Req struct {
+			Name string `query:"name"`
+			Age int `query:"age"`
+		}
+		req := Req{}
+		reject = c.BindRequest(&req) ; if reject != nil {return}
+		return c.Bytes([]byte(fmt.Sprintf("我是%s，今年%d岁", req.Name, req.Age)))
+	})
+	err := serve.Listen(":1004"); if err != nil {panic(err)}
 }
+
+
+func TestResponse(t *testing.T) {
+	serve := http.NewServeMux()
+	log.Print("打开 http://127.0.0.1:1005/response")
+	serve.HandleFunc("/response", func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write([]byte("abc")) ; if err != nil {panic(err)}
+	})
+	log.Print("打开 http://127.0.0.1:1005/json")
+	serve.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		w.Header().Set("Content-type", "application/json")
+		type Reply struct {
+			Name string `json:"name"`
+			Age int `json:"age"`
+		}
+		reply := Reply{
+			Name: "nimoc",
+			Age: 22,
+		}
+		jsonb, err := ogjson.BytesWithErr(reply) ; if err != nil {panic(err)}
+		_, err = w.Write(jsonb) ; if err != nil {panic(err)}
+	})
+	log.Print("打开 http://127.0.0.1:1005/html")
+	serve.HandleFunc("/html", func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		w.Header().Set("Content-type", "text/html")
+		_, err = w.Write([]byte(`<a href="https://github.com/og/thinking-in-go">thinking-in-go</a>`))
+		if err != nil {panic(err)}
+	})
+	log.Print("打开 http://127.0.0.1:1005/download 下载文件")
+	serve.HandleFunc("/download", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-type", "application/octet-stream")
+		w.Header().Set("Content-Disposition", `attachment; filename="a.txt"`)
+		_, err := w.Write([]byte("abc")) ; if err != nil { panic(err) }
+	})
+	log.Print("打开 http://127.0.0.1:1005/set_cookie?title=orange")
+	serve.HandleFunc("/set_cookie", func(w http.ResponseWriter, r *http.Request) {
+		http.SetCookie(w, &http.Cookie{
+			Name: "title",
+			Value: r.URL.Query().Get("title"),
+		})
+		_, err := w.Write([]byte("set cookie success")) ; if err != nil { panic(err) }
+	})
+	log.Print("打开 http://127.0.0.1:1005/get_cookie")
+	serve.HandleFunc("/get_cookie", func(w http.ResponseWriter, r *http.Request) {
+			var err error
+			var title string
+			cookie, err := r.Cookie("title") ; if err != nil {panic(err)}
+			switch err {
+			case nil:
+				title = cookie.Value
+			case http.ErrNoCookie:
+				title = ""
+			default:
+				panic(err)
+			}
+		_, err = w.Write([]byte("get cookie:(" + title + ")")) ; if err != nil { panic(err) }
+	})
+	addr := ":1005"
+	log.Print("Listen http://127.0.0.1"+ addr)
+	err := http.ListenAndServe(addr, serve)
+	if err != nil {panic(err)}
+}
+
+var _ = `
+上述代码主要内是
+
+1. ^w.Header().Set(key string, value string)^
+2. ^r.Cookie(key string)^
+3. ^http.SetCookie(w ResponseWriter, cookie *http.Cookie)^
+
+w.Header() 比较好理解,w.Header() 控制http响应的header部分，对应的 r.Header() 获取请求的 header 部分。
+
+r.Cookie(key string) 有个特殊的地方是当请求的 cookie 中找不到对于的 key ，则会返回 http.ErrNoCookie .
+这个函数设计的有点傻，如果函数签名设计成 ^r.Cookie(key) (cookie *http.Cookie, hasCookie bool, err error)^ 会更好
+
+无论是 http.Request 还是 http.ResponseWriter ,很多方法偏"底层"，日常工作中使用会比较繁琐。
+
+基于 github.com/og/juice 去处理http请求和响应是一个不错的选择。
+`
